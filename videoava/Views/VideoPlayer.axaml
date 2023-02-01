@@ -1,0 +1,33 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vlcsharp="clr-namespace:LibVLCSharp.Avalonia.Unofficial"
+             xmlns:controls="using:videoava.Views"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="videoava.Views.VideoPlayer">
+
+    <Panel
+        Height="300"
+        Width="400"
+        Background="Red">
+        
+        
+        <vlcsharp:VideoView
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"				
+            x:Name="VideoViewer">
+		        
+            <Panel
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Bottom"
+                Opacity="0.8"
+                Background="Gray">
+                <controls:PlayerControls/>
+            </Panel>
+
+        </vlcsharp:VideoView>
+    </Panel>
+    
+    
+</UserControl>

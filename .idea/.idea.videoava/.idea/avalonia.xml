@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="videoava/App.axaml" value="videoava/videoava.csproj" />
+        <entry key="videoava/Assets/Icons.axaml" value="videoava/videoava.csproj" />
+        <entry key="videoava/Views/MainWindow.axaml" value="videoava/videoava.csproj" />
+        <entry key="videoava/Views/PlayerControls.axaml" value="videoava/videoava.csproj" />
+        <entry key="videoava/Views/VideoPlayer.axaml" value="videoava/videoava.csproj" />
+      </map>
+    </option>
+  </component>
+</project>
