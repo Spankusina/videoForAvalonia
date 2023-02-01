@@ -4,26 +4,28 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vlcsharp="clr-namespace:LibVLCSharp.Avalonia.Unofficial"
              xmlns:controls="using:videoava.Views"
+             xmlns:viewModels="clr-namespace:videoava.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="videoava.Views.VideoPlayer">
-
+             x:Class="videoava.Views.VideoPlayerView"
+             x:DataType="viewModels:VideoPlayerViewModel"
+             x:CompileBindings="True">
     <Panel
         Height="300"
         Width="400"
         Background="Red">
         
-        
         <vlcsharp:VideoView
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"				
-            x:Name="VideoViewer">
-		        
+            x:Name="VideoViewer"
+            DataContext="{Binding}">
             <Panel
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Bottom"
                 Opacity="0.8"
                 Background="Gray">
-                <controls:PlayerControls/>
+                <controls:PlayerControls
+                    x:Name="PlayerControlsInView"/>
             </Panel>
 
         </vlcsharp:VideoView>

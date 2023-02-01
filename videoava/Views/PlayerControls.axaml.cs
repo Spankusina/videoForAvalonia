@@ -1,78 +1,84 @@
 ﻿using System;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using videoava.ViewModels;
-
 
 namespace videoava.Views
 {
     public partial class PlayerControls : UserControl
     {
-        public MainWindowViewModel ViewModel = new();
-        private static PlayerControls? _this;
-        private bool _isPaused = false;
-        private Slider _volumeSlider;
-        public Slider _timeSlider;
+        private VideoPlayerViewModel? viewModel;
+        private bool isPaused;
+        private Slider volumeSlider;
+        private Slider timeSlider;
 
         public PlayerControls()
         {
             InitializeComponent();
-            _this = this;
-            DataContext = ViewModel;
-            _volumeSlider = this.Get<Slider>("SliderVolume");
-            _timeSlider = this.Get<Slider>("SliderTime");
-
-            _volumeSlider.Value = 90.0;
-            ViewModel.XVolume = 90.0;
-
-            _volumeSlider.AddHandler(PointerPressedEvent, VolumeSlider_PointerPressed, RoutingStrategies.Tunnel);
-            _volumeSlider.AddHandler(PointerReleasedEvent, VolumeSlider_PointerReleased, RoutingStrategies.Tunnel);
-            
-            _timeSlider.AddHandler(PointerReleasedEvent, TimeSlider_PointerReleased, RoutingStrategies.Tunnel);
-            _timeSlider.AddHandler(PointerPressedEvent, TimeSlider_PointerPressed, RoutingStrategies.Tunnel);
-        }
-
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
+            Loaded += OnPlayerControlsLoaded;
         }
         
-        public static PlayerControls GetInstance()
+        public void SetDataContext(VideoPlayerViewModel videoPlayerViewModel)
         {
-            return _this;
+            viewModel = videoPlayerViewModel;
+            DataContext = viewModel;
+        }
+
+        private void OnPlayerControlsLoaded(object? sender, RoutedEventArgs e)
+        {
+            if (viewModel == null)
+                throw new Exception($"Couldn't find the {nameof(VideoPlayerViewModel)}. " +
+                                    $"Did you call the {nameof(SetDataContext)} method?");
+            
+            volumeSlider = this.Get<Slider>("SliderVolume");
+            timeSlider = this.Get<Slider>("SliderTime");
+
+            volumeSlider.Value = 90.0;
+            viewModel.XVolume = 90.0;
+
+            volumeSlider.AddHandler(PointerPressedEvent, VolumeSlider_PointerPressed, RoutingStrategies.Tunnel);
+            volumeSlider.AddHandler(PointerReleasedEvent, VolumeSlider_PointerReleased, RoutingStrategies.Tunnel);
+            
+            timeSlider.AddHandler(PointerReleasedEvent, TimeSlider_PointerReleased, RoutingStrategies.Tunnel);
+            timeSlider.AddHandler(PointerPressedEvent, TimeSlider_PointerPressed, RoutingStrategies.Tunnel);
         }
 
         private void VolumeSlider_PointerPressed(object? sender, PointerPressedEventArgs e)
         {
-            ViewModel.XVolume = _volumeSlider.Value;
+            if (viewModel == null)
+                return;
+            
+            viewModel.XVolume = volumeSlider.Value;
         }
 
         private void VolumeSlider_PointerReleased(object? sender, PointerReleasedEventArgs e)
         {
-            ViewModel.XVolume = _volumeSlider.Value;
+            if (viewModel == null)
+                return;
+            
+            viewModel.XVolume = volumeSlider.Value;
         }
         
         private void TimeSlider_PointerPressed(object? sender, PointerPressedEventArgs e)
         {
-            var mainWindowInstance = VideoPlayer.GetInstance();
-            mainWindowInstance.ViewModel.Pause();
+            viewModel?.Pause();
         }
         
         private void TimeSlider_PointerReleased(object? sender, PointerReleasedEventArgs e)
         {
-            var videoPlayerInstance = VideoPlayer.GetInstance();
-            if (ViewModel.VideoDuration == 0)
-                ViewModel.ChangeVideoDuration();
+            if (viewModel == null)
+                return;
             
-            var duration = ViewModel.VideoDuration;
+            if (viewModel.VideoDuration == 0)
+                viewModel.ChangeVideoDuration();
+            
+            var duration = viewModel.VideoDuration;
 
-            var time = (long)Math.Ceiling((_timeSlider.Value * duration) / 100);
+            var time = (long)Math.Ceiling((timeSlider.Value * duration) / 100);
             
-            videoPlayerInstance.ViewModel.ChangeTime(time);
-            videoPlayerInstance.ViewModel.Pause();
+            viewModel.ChangeTime(time);
+            viewModel.Pause();
         }
         
         private void PlayerPause(object sender, RoutedEventArgs e)
@@ -80,20 +86,19 @@ namespace videoava.Views
             var icon = (Button)sender;
             icon.Classes.Clear();
 
-            switch (_isPaused)
+            switch (isPaused)
             {
                 case true:
                     icon.Classes.Add("Pause");
-                    _isPaused = false;
+                    isPaused = false;
                     break;
                 case false:
                     icon.Classes.Add("Play");
-                    _isPaused = true;
+                    isPaused = true;
                     break;
             }
             
-            var mainWindowInstance = VideoPlayer.GetInstance();
-            mainWindowInstance.ViewModel.Pause();
+            viewModel?.Pause();
         }
     }
 }
